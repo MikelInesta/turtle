@@ -1,45 +1,76 @@
 package turtle
 
 import (
-  "bufio"
-  "os"
+	"bufio"
+	"errors"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type Turtle struct {
-  instructionSet []Instruction
+  instructionSet map[string]Action
 }
 
-type NewTurtle(set []Instruction) Turtle {
+func NewTurtle(instructions map[string]Action) Turtle {
   return Turtle{
-    instructionSet = set
+    instructionSet: instructions,
   }
 }
-
-type Action func(modifier int)
 
 type Instruction struct {
-  Command string
-  action Action 
+  command string 
+  modifier int
+}
+
+// The actual function to be called to run an instruction
+type Action func(modifier int)
+
+
+// Receives a raw string and returns an Instruction 
+func (t Turtle) parse(query string) (*Instruction, error) {
+  trimmed := strings.TrimSpace(query)
+  split := strings.Split(trimmed, " ")
+  if (len(split) < 1){
+    return nil, errors.New("query must have at least one argument")
+  }
+  command := split[0]
+  if (len(split) > 1){
+    modifier, err := strconv.Atoi(split[1])
+    if err != nil {
+      return nil, err
+    }
+
+    return &Instruction{
+      command: command,
+      modifier: modifier,
+    }, nil
+  }
+
+  return &Instruction{
+    command: command,
+  }, nil
 }
 
 
-// Receives a raw string and returns an Instruction
-func (t Turtle) parse(query string) (Instruction, error) {
-
-}
-
-// Receives an instruction and calls its assigned action 
-func (t Turtle) execute(instr Instruction) (error) {
-
-}
-
-// Reads from stdin and calls executions
-func (t Turtle) read(){
+// Reads from stdin and executes actions based on commands 
+func (t Turtle) read() error {
   input := bufio.NewScanner(os.Stdin)
   for input.Scan() {
+
     line := input.Text() 
+
+    instruction, err := t.parse(line)
+    if (err != nil){
+      return err
+    }
+
+    action, ok := t.instructionSet[instruction.command]
+    if(!ok){
+      return errors.New("unsupported command")
+    }
+
+    action(instruction.modifier)
   }
+  return nil
 }
-
-// -- Instruction Set --
-
