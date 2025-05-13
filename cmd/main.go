@@ -1,6 +1,8 @@
 package main
 
-import "github.com/mikelinesta/turtle/internal/turtle"
+import (
+	"github.com/mikelinesta/turtle/internal/turtle"
+)
 
 // Main function in charge of reading input from stdin and calling
 // the Turtle package
@@ -19,7 +21,13 @@ func main(){
     instructions,
   )
   // Start reading input
-  t.Read()
+
+  for{
+    err := t.Read()
+    if err != nil{
+      println(err.Error())
+    }
+  }
 
 }
 

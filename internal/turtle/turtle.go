@@ -35,6 +35,7 @@ func (t Turtle) parse(query string) (*Instruction, error) {
     return nil, errors.New("query must have at least one argument")
   }
   command := split[0]
+  lowerCaseCommand := strings.ToLower(command)
   if (len(split) > 1){
     modifier, err := strconv.Atoi(split[1])
     if err != nil {
@@ -42,13 +43,13 @@ func (t Turtle) parse(query string) (*Instruction, error) {
     }
 
     return &Instruction{
-      command: command,
+      command: lowerCaseCommand,
       modifier: modifier,
     }, nil
   }
 
   return &Instruction{
-    command: command,
+    command: lowerCaseCommand,
   }, nil
 }
 
