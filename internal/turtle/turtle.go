@@ -54,7 +54,7 @@ func (t Turtle) parse(query string) (*Instruction, error) {
 
 
 // Reads from stdin and executes actions based on commands 
-func (t Turtle) read() error {
+func (t Turtle) Read() error {
   input := bufio.NewScanner(os.Stdin)
   for input.Scan() {
 
